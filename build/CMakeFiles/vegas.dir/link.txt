@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wall -Wno-reorder -g CMakeFiles/vegas.dir/src/examples/vegas.cpp.o -o vegas   -L/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/lib  -Wl,-rpath,/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/lib -Wl,-Bstatic -lamd -lldl -lsuitesparseconfig -Wl,-Bdynamic 

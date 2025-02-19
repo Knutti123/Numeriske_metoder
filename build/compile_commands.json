@@ -1,0 +1,47 @@
+[
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/main.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/main.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/anneal.dir/src/examples/anneal.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/anneal.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/anneal.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/bessel.dir/src/examples/bessel.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/bessel.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/bessel.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/integrals.dir/src/examples/integrals.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/integrals.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/integrals.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/levex.dir/src/examples/levex.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/levex.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/levex.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/ludcmp.dir/src/examples/ludcomp.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/ludcomp.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/ludcomp.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/odeint.dir/src/examples/odeint.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/odeint.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/odeint.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/sfroid.dir/src/examples/sfroid.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/sfroid.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/sfroid.cpp"
+},
+{
+  "directory": "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+  "command": "/usr/bin/c++  -I/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include -Wall -Wno-reorder -g -std=gnu++14 -o CMakeFiles/vegas.dir/src/examples/vegas.cpp.o -c /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/vegas.cpp",
+  "file": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/examples/vegas.cpp"
+}
+]

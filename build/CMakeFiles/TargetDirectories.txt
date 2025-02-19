@@ -1,0 +1,12 @@
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/Numerical_Recipes.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/anneal.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/bessel.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/integrals.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/levex.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/ludcmp.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/odeint.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/sfroid.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/vegas.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/test.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/edit_cache.dir
+/home/kristian/Uni/6_semester/Numeriske_metoder/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,132 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Numerical_Recipes",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Numerical_Recipes::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Numerical_Recipes-Debug-ff913c2e46adde516299.json",
+					"name" : "Numerical_Recipes",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "anneal::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-anneal-Debug-4967b4380fc66cd4a1b7.json",
+					"name" : "anneal",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "bessel::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bessel-Debug-e091afc3f2cff86358d1.json",
+					"name" : "bessel",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "integrals::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-integrals-Debug-bd733fadd1d4574ff6d6.json",
+					"name" : "integrals",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "levex::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-levex-Debug-526455a13269e716f15b.json",
+					"name" : "levex",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ludcmp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ludcmp-Debug-7c51fcb6f1efc9b6c7b6.json",
+					"name" : "ludcmp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "odeint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-odeint-Debug-dbc62fb1953f176567e4.json",
+					"name" : "odeint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sfroid::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sfroid-Debug-212fe9f19d0fdcc1fa2d.json",
+					"name" : "sfroid",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "vegas::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-vegas-Debug-93d049b86ca8a58a90ed.json",
+					"name" : "vegas",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/kristian/Uni/6_semester/Numeriske_metoder/build",
+		"source" : "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

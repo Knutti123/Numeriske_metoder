@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wall -Wno-reorder -g CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o -o Numerical_Recipes   -L/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/lib  -Wl,-rpath,/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/lib -Wl,-Bstatic -lamd -lldl -lsuitesparseconfig -Wl,-Bdynamic 
