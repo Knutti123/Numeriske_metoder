@@ -180,7 +180,6 @@ int main()
                         ex1 >> ex1A[i][j];
                 }
         }
-        cout << ex1A[0][5] << endl;
         //Matrix B setup (vector)
         ifstream ex1b("/home/kristian/Uni/6_semester/Numeriske_metoder/Aflevering_1/Ex1b.dat");
         int L_B, W_B;
@@ -191,22 +190,28 @@ int main()
         for(int i = 0; i < L_B; i++) {
                 ex1b >> b[i];
         }
-        cout << b[0] << endl;
         //Task 1
         SVD svd(ex1A);
         VecDoub x(W);
         svd.solve(b,x);
         //Print the diagonal elemetens in matrix W
-        for (int i = 0; i < svd.w.size(); i++) {
-            cout << "W[" << i << "][" << i << "] = " << svd.w[i] << endl;
-        }   
+        util::print(svd.w);
         //Task 2
         //Print the solution x
-        for (int i = 0; i < x.size(); i++) {
-            cout << "x[" << i << "] = " << x[i] << endl;
-        }        
+        util::print(x);
         //Task 3
         //State an estimate of the accuracy of the solution x
+        //MSE
+        double MSE = 0;
+        for (int i = 0; i < L; i++) {
+            double Ax_i = 0;
+            for (int j = 0; j < W; j++) {
+                Ax_i += ex1A[i][j] * x[j];
+            }
+            MSE += pow(b[i] - Ax_i, 2);
+        }
+        MSE = MSE/L;
+        cout << "MSE = " << MSE << endl;
 
 
         //Task 4
