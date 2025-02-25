@@ -1,6 +1,7 @@
 {
     "cmake.sourceDirectory": "/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master",
     "files.associations": {
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iosfwd": "cpp"
     }
 }
