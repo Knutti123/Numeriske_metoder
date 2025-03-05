@@ -161,60 +161,100 @@
 #include <weights.h>
 #include <zrhqr.h>
 
-using namespace std;
+        using namespace std;
 
 
-
-int main() 
-{
-    //Setup of data
-    //Matrix A setup
-        ifstream ex1("/home/kristian/Uni/6_semester/Numeriske_metoder/Aflevering_1/Ex1A.dat");
-        int L, W;
-        ex1 >> L;
-        ex1 >> W;
-        cout << L << " " << W << endl;
-        MatDoub ex1A(L,W);
-        for(int i = 0; i < L; i++) {
-                for(int j = 0; j < W; j++) {
-                        ex1 >> ex1A[i][j];
-                }
+        template<class T>
+        Doub rtbis_test(T &func, const Doub x1, const Doub x2, const Doub xacc,vector<Doub> &x_k, vector<Doub> &d_k) {
+        const Int JMAX = 50;
+        Doub dx, xmid, rtb;
+        Doub f = func(x1);
+        Doub fmid = func(x2);
+        if (f * fmid >= 0.0) throw("Root must be bracketed for bisection in rtbis");
+        rtb = f < 0.0 ? (dx = x2 - x1, x1) : (dx = x1 - x2, x2);
+        double x_prev = rtb;
+        for (Int j = 0; j < JMAX; j++) {
+        fmid = func(xmid = rtb + (dx *= 0.5));
+        //x_k.push_back(rtb);
+        if (fmid <= 0.0) rtb = xmid;
+        x_k.push_back(rtb);
+        d_k.push_back(abs(x_prev - rtb));
+        if (abs(dx) < xacc || fmid == 0.0) return rtb;
+        x_prev = rtb; 
         }
-        //Matrix B setup (vector)
-        ifstream ex1b("/home/kristian/Uni/6_semester/Numeriske_metoder/Aflevering_1/Ex1b.dat");
-        int L_B, W_B;
-        ex1b >> L_B;
-        ex1b >> W_B;
-        VecDoub b(L);
-        cout << L_B << " " << W_B << endl;
-        for(int i = 0; i < L_B; i++) {
-                ex1b >> b[i];
+        throw("Too many bisections in rtbis");
         }
-        //Task 1
-        SVD svd(ex1A);
-        VecDoub x(W);
-        svd.solve(b,x);
-        //Print the diagonal elemetens in matrix W
-        util::print(svd.w);
-        //Task 2
-        //Print the solution x
-        util::print(x);
-        //Task 3
-        //State an estimate of the accuracy of the solution x
-        //MSE
-        double MSE = 0;
-        for (int i = 0; i < L; i++) {
-            double Ax_i = 0;
-            for (int j = 0; j < W; j++) {
-                Ax_i += ex1A[i][j] * x[j];
+
+        template<class T>
+        Doub rtflsp(T &func, const Doub x1, const Doub x2, const Doub xacc,vector<Doub> &x_k, vector<Doub> &d_k) {
+            const Int MAXIT = 30;
+            Doub xl, xh, del;
+            Doub fl = func(x1);
+            Doub fh = func(x2);
+            if (fl * fh > 0.0) throw("Root must be bracketed in rtflsp");
+            if (fl < 0.0) {
+                xl = x1;
+                xh = x2;
+            } else {
+                xl = x2;
+                xh = x1;
+                SWAP(fl, fh);
             }
-            MSE += pow(b[i] - Ax_i, 2);
+            Doub dx = xh - xl;
+            Doub x_prev = xl; //To calculate d_k
+            for (Int j = 0; j < MAXIT; j++) {
+                Doub rtf = xl + dx * fl / (fl - fh);
+                Doub f = func(rtf);
+                if (f < 0.0) {
+                    del = xl - rtf;
+                    xl = rtf;
+                    fl = f;
+                } else {
+                    del = xh - rtf;
+                    xh = rtf;
+                    fh = f;
+                }
+                dx = xh - xl;
+                //Store information
+                x_k.push_back(rtf);
+                d_k.push_back(abs(x_prev - rtf));
+                x_prev = rtf;
+                if (abs(del) < xacc || f == 0.0) return rtf;
+            }
+            throw("Maximum number of iterations exceeded in rtflsp");
         }
-        MSE = MSE/L;
-        cout << "MSE = " << MSE << endl;
 
+        int main() 
+        {
+                // Create a function
+                struct Func {
+                        double operator()(double x) {
+                                return x - cos(x);
+                        }
+                };
+                Func func;
 
-        //Task 4
-        //Compute and state the residual vector r = b - Ax
+                // Print the table header
+                cout << "k" << "\t" << "x_k" << "\t" << "d_k" << endl;
 
-}
+                // Variables for iteration
+                const double xacc = pow(10, -16);
+                vector <double> x_k_vec;
+                vector <double> d_k_vec;
+                double root = rtbis_test(func, 0, 1, xacc, x_k_vec, d_k_vec);
+                for (size_t i = 0; i < x_k_vec.size(); i++)
+                {
+                        cout<<i<<"\t"<<x_k_vec[i]<<"\t"<<d_k_vec[i]<<endl;
+                }
+                cout << "k" << "\t" << "x_k" << "\t" << "d_k" << endl;
+                vector <double> x_k_vec2;
+                vector <double> d_k_vec2;
+                root = rtflsp(func, 0, 1, xacc, x_k_vec2, d_k_vec2);
+                for (size_t i = 0; i < x_k_vec2.size(); i++)
+                {
+                        cout<<i<<"\t"<<x_k_vec2[i]<<"\t"<<d_k_vec2[i]<<endl;
+                }
+                return 0;
+                
+
+        }
