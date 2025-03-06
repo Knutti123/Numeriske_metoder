@@ -160,7 +160,7 @@
 #include <wavelet.h>
 #include <weights.h>
 #include <zrhqr.h>
-
+#include <math.h>
 using namespace std;
 
 
@@ -169,11 +169,11 @@ int main()
 {
     //Setup of data
     //Matrix A setup
-        ifstream ex1("/home/kristian/Uni/6_semester/Numeriske_metoder/Aflevering_1/Ex1A.dat");
-        int L, W;
+        ifstream ex1("/home/kristian/Kode/Numeriske_metoder/Numerical-Recipes-master/Ex1A.dat");
+        double L, W;
         ex1 >> L;
         ex1 >> W;
-        cout << L << " " << W << endl;
+        //cout << L << " " << W << endl;
         MatDoub ex1A(L,W);
         for(int i = 0; i < L; i++) {
                 for(int j = 0; j < W; j++) {
@@ -181,12 +181,12 @@ int main()
                 }
         }
         //Matrix B setup (vector)
-        ifstream ex1b("/home/kristian/Uni/6_semester/Numeriske_metoder/Aflevering_1/Ex1b.dat");
-        int L_B, W_B;
+        ifstream ex1b("/home/kristian/Kode/Numeriske_metoder/Numerical-Recipes-master/Ex1b.dat");
+        double L_B, W_B;
         ex1b >> L_B;
         ex1b >> W_B;
         VecDoub b(L);
-        cout << L_B << " " << W_B << endl;
+        //cout << L_B << " " << W_B << endl;
         for(int i = 0; i < L_B; i++) {
                 ex1b >> b[i];
         }
@@ -194,28 +194,74 @@ int main()
         SVD svd(ex1A);
         VecDoub x(W);
         svd.solve(b,x);
-        //Print the diagonal elemetens in matrix W
+        //Print the diagonal elements in matrix W
         util::print(svd.w);
+        cout<<""<<endl;
         //Task 2
         //Print the solution x
         util::print(x);
         //Task 3
         //State an estimate of the accuracy of the solution x
-        //MSE
-        double MSE = 0;
+        //Residual error
+        double Residual_err = 0;
+        double normB = 0;
+        //This calculates the residual error
         for (int i = 0; i < L; i++) {
             double Ax_i = 0;
             for (int j = 0; j < W; j++) {
                 Ax_i += ex1A[i][j] * x[j];
             }
-            MSE += pow(b[i] - Ax_i, 2);
+        //we store the data from the row in the residual error
+        Residual_err += pow(b[i] - Ax_i, 2);
+        normB += pow(b[i], 2);
         }
-        MSE = MSE/L;
-        cout << "MSE = " << MSE << endl;
-
+        //We take the square root of the residual error and divide it by the square root of the norm of B
+        Residual_err = sqrt(Residual_err)/sqrt(normB);
+        cout << "Residual error = " << Residual_err << endl;
+        //random fitting
+        double random_fit = sqrt((L - W) / L);
+        cout << "Random fitting = " << random_fit << endl;
+        //The soultion x has a good accuracy according to the residual error in regards to the random fitting
 
         //Task 4
         //Compute and state the residual vector r = b - Ax
-        
+        VecDoub r(L);
+        for (int i = 0; i < L; i++) {
+            double Ax_i = 0;
+            for (int j = 0; j < W; j++) {
+                Ax_i += ex1A[i][j] * x[j];
+            }
+            r[i] = Ax_i - b[i];
+        }
+        //Print the residual vector r
+        cout<<"Residual vector r = b - Ax"<<endl;
+        util::print(r);  
+        //Task 5
+        //Compute the new sigma_i and then design the new matrix A and new B vector. State A[0][0] and B[6].
+        VecDoub Sigma_I(L);
+        Doub Delta =1.0;
+        for (int i = 0; i < L; i++) {
+            Sigma_I[i] = max(Delta, abs(r[i]));
+        }
+        //Design the new matrix A and new B vector
+        MatDoub new_A(L,W);
+        VecDoub new_B(L);
+        for (int i = 0; i < L; i++) {
+            for (int j = 0; j < W; j++) {
+                new_A[i][j] = ex1A[i][j] / Sigma_I[i];
+            }
+            new_B[i] = b[i] / Sigma_I[i];
+        }
+        //Print A[0][0] and B[6]
+        cout << "A[0][0] = " << new_A[0][0] << endl;
+        cout << "B[6] = " << new_B[6] << endl;
+        //Task 6
+        //Compute and use the Singular Value Decomposition to compute the solution x to Ax=b with the new matrix A and new vector B
+        SVD svd_new(new_A);
+        VecDoub x_new(W);
+        svd_new.solve(new_B,x_new);
+        //Print the solution x
+        cout<<"Solution x to Ax=b with the new matrix A and new vector B"<<endl;
+        util::print(x_new);
 
 }
