@@ -1,5 +1,6 @@
 #pragma once
 #include <nr3.h>
+#include <utilities.h>
 
 template<class T>
 void lnsrch(VecDoub_I &xold, const Doub fold, VecDoub_I &g, VecDoub_IO &p,
@@ -108,7 +109,7 @@ void newt(VecDoub_IO &x, Bool &check, T &vecfunc) {
     Int i, j, its, n = x.size();
     Doub den, f, fold, stpmax, sum, temp, test;
     VecDoub g(n), p(n), xold(n);
-    MatDoub fjac(n, n);
+    MatDoub fjac(n, n); 
     NRfmin<T> fmin(vecfunc);
     NRfdjac<T> fdjac(vecfunc);
     VecDoub &fvec = fmin.fvec;
@@ -118,6 +119,7 @@ void newt(VecDoub_IO &x, Bool &check, T &vecfunc) {
         if (abs(fvec[i]) > test) test = abs(fvec[i]);
     if (test < 0.01 * TOLF) {
         check = false;
+        cout<<"amount of iterations:"<<its<<endl; //costoum code
         return;
     }
     sum = 0.0;
@@ -137,10 +139,17 @@ void newt(VecDoub_IO &x, Bool &check, T &vecfunc) {
         alu.solve(p, p);
         lnsrch(xold, fold, g, p, x, f, stpmax, check, fmin);
         test = 0.0;
+        //My code
+        // Print x values after this iteration
+        //std::cout << "After iteration " << its+1 << ", x values: ";
+        //for (i = 0; i < n; i++) std::cout << x[i] << " ";
+        //std::cout << std::endl;
+        //End of my code
         for (i = 0; i < n; i++)
             if (abs(fvec[i]) > test) test = abs(fvec[i]);
         if (test < TOLF) {
             check = false;
+            cout<<"amount of iterations:"<<its<<endl; //costoum code
             return;
         }
         if (check) {
@@ -151,6 +160,7 @@ void newt(VecDoub_IO &x, Bool &check, T &vecfunc) {
                 if (temp > test) test = temp;
             }
             check = (test < TOLMIN);
+            cout<<"amount of iterations:"<<its<<endl; //costoum code
             return;
         }
         test = 0.0;
@@ -159,14 +169,18 @@ void newt(VecDoub_IO &x, Bool &check, T &vecfunc) {
             if (temp > test) test = temp;
         }
         if (test < TOLX)
+        {
+            cout<<"amount of iterations:"<<its<<endl; //costoum code
             return;
+        }
     }
     throw("MAXITS exceeded in newt");
 }
 
+
 template<class T>
 void broydn(VecDoub_IO &x, Bool &check, T &vecfunc) {
-    const Int MAXITS = 200;
+    const Int MAXITS = 2000;
     const Doub EPS = std::numeric_limits<Doub>::epsilon();
     const Doub TOLF = 1.0e-8, TOLX = EPS, STPMX = 100.0, TOLMIN = 1.0e-12;
     Bool restrt, skip;

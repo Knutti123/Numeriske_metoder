@@ -371,6 +371,7 @@ CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o: /home/kristian/Uni/6_semester/N
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/rk4.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/romberg.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/roots_multidim.h \
+  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/utilities.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/savgol.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/scrsho.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/selip.h \
@@ -398,7 +399,6 @@ CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o: /home/kristian/Uni/6_semester/N
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/vegas.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/voltra.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/voronoi.h \
-  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/utilities.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/wavelet.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/weights.h \
   /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/zrhqr.h
@@ -407,8 +407,6 @@ CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o: /home/kristian/Uni/6_semester/N
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/weights.h:
 
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/wavelet.h:
-
-/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/utilities.h:
 
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/voronoi.h:
 
@@ -435,6 +433,8 @@ CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o: /home/kristian/Uni/6_semester/N
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/selip.h:
 
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/savgol.h:
+
+/home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/utilities.h:
 
 /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/roots_multidim.h:
 

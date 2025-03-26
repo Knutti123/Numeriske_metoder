@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include <nr3.h>
 #include <adapt.h>
 #include <amebsa.h>
@@ -159,10 +160,40 @@
 #include <wavelet.h>
 #include <weights.h>
 #include <zrhqr.h>
-using namespace std;
 
+        using namespace std;
 
-int main() {
-    cout << "Hello, World!" << endl;
-    return 0;
-}
+        VecDoub vecfunc(VecDoub_I &x){
+            VecDoub f(2);
+            f[0] = x[0] + 2*sin(x[1]-x[0])-exp(-sin(x[1]+x[0]));
+            f[1] = x[0]*cos(x[1])+sin(x[0])-1;
+            return f;
+            };
+    
+            int main() 
+            {
+                    // First, evaluate the initial values with x₀=1, x₁=1
+                    cout << "Initial values:" << endl;
+                    VecDoub x_init(2);
+                    x_init[0] = 1.0;
+                    x_init[1] = 1.0;
+                    VecDoub f_init = vecfunc(x_init);
+                    cout << "At x₀=" << x_init[0] << ", x₁=" << x_init[1] << ":" << endl;
+                    cout << "f₀(x) = " << f_init[0] << endl;
+                    cout << "f₁(x) = " << f_init[1] << endl;
+                    
+                    VecDoub x_test(2);
+                    x_test[0] = 1;
+                    x_test[1] = 2;
+            
+                    Bool check = false;  // Variable to receive convergence status
+                    newt(x_test, check, vecfunc);  // Pass the function object itself
+                    
+                    // Check if the algorithm converged successfully
+                    if (check) {    
+                        cout << "Warning: Possible convergence issues" << endl;
+                    } else {
+                        cout << "Solution found: x₀=" << x_test[0] << ", x₁=" << x_test[1] << endl;
+                    }
+                    
+            }
