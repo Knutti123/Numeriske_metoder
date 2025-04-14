@@ -160,68 +160,119 @@
 #include <weights.h>
 #include <zrhqr.h>
 using namespace std;
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+#include <vector>
 
-
-// Newton-Cotes quadrature implementation
-double trapezoid(double a, double b, int n, double (*func)(double)) {
-    double h = (b - a) / n;
-    double sum = 0.5 * (func(a) + func(b));
-    
-    for (int i = 1; i < n; i++) {
-        sum += func(a + i * h);
-    }
-    
-    return h * sum;
+// The function to integrate: cos(x^2) * exp(-x)
+double eq1(double x) {
+    return cos(pow(x, 2)) * exp(-x);
 }
 
-double simpson(double a, double b, int n, double (*func)(double)) {
-    if (n % 2 != 0) n++; // Simpson's rule requires even number of intervals
-    
-    double h = (b - a) / n;
-    double sum = func(a) + func(b);
-    
-    for (int i = 1; i < n; i++) {
-        if (i % 2 == 0) {
-            sum += 2 * func(a + i * h);
-        } else {
-            sum += 4 * func(a + i * h);
-        }
-    }
-    
-    return h * sum / 3;
-}
-
-// Midpoint rule
+// Midpoint integration method
 double midpoint(double a, double b, int n, double (*func)(double)) {
     double h = (b - a) / n;
     double sum = 0.0;
-    
     for (int i = 0; i < n; i++) {
         double x_mid = a + (i + 0.5) * h;
         sum += func(x_mid);
     }
-    
     return h * sum;
 }
-// Test function for integration
-double eq1(double x) {
-    return cos(pow(x,2))*exp(-x); 
-}
-double eq2(double x) {
-    return sqrt(x)*cos(pow(x,2))*exp(-x); 
-}
-double eq3(double x) {
-    return (1/sqrt(x))*cos(pow(x,2))*exp(-x); 
-}
-double eq4(double x) {
-    return 1000*exp(-1/x)*exp(-1/(1-x));
-}
 
+// Calculate Richardson extrapolation using Midpnt
+void richardsonExtrapolation(double a, double b, int maxLevel, int order) {
+    std::vector<std::vector<double>> A(maxLevel + 1, std::vector<double>(maxLevel + 1, 0.0));
+    std::vector<double> diffs(maxLevel + 1, 0.0);
+
+    // Define the function to integrate
+    auto func = [](double x) { return cos(pow(x, 2)) * exp(-x); };
+
+    // Calculate initial approximations with increasing number of intervals using Midpnt
+    for (int i = 1; i <= maxLevel; i++) {
+        int n = pow(2, i - 1);
+        Midpnt<decltype(func)> midpnt(func, a, b);
+        for (int j = 0; j < n; j++) {
+            midpnt.next();
+        }
+        A[i][1] = midpnt.s;
+    }
+
+    // Print header
+    std::cout << "MidPoint result:  h1/h2 = 2" << std::endl;
+    std::cout << std::setw(5) << "i"
+              << std::setw(15) << "A(h_i)"
+              << std::setw(20) << "A(h_(i-1)) - A(h_i)"
+              << std::setw(15) << "alp^k"
+              << std::setw(15) << "Rich-error"
+              << std::setw(15) << "f-calculations"
+              << std::setw(15) << "order-estimate"
+              << std::endl;
+
+    // Calculate and print first row (no differences available yet)
+    std::cout << std::setw(5) << 1
+              << std::setw(15) << std::fixed << std::setprecision(6) << A[1][1]
+              << std::endl;
+
+    // Calculate difference for second row
+    diffs[2] = A[1][1] - A[2][1];
+
+    // Print second row (no ratio available yet)
+    std::cout << std::setw(5) << 2
+              << std::setw(15) << std::fixed << std::setprecision(6) << A[2][1]
+              << std::setw(20) << std::scientific << std::setprecision(8) << diffs[2]
+              << std::endl;
+
+    // Process remaining rows
+    for (int i = 3; i <= maxLevel; i++) {
+        // Calculate differences for current row
+        diffs[i] = A[i - 1][1] - A[i][1];
+
+        // Calculate ratio of consecutive differences (alp^k)
+        double alpha_k = 0.0;
+        if (fabs(diffs[i - 1]) > 1e-20) {  // Avoid division by very small numbers
+            alpha_k = diffs[i - 1] / diffs[i];
+        }
+
+        // Calculate Richardson error estimate
+        double rich_error = 0.0;
+        if (i > 2) {
+            rich_error = (A[i][1] - A[i - 1][1]) / (pow(2, order) - 1);
+        }
+
+        // Calculate order estimate
+        double order_estimate = 0.0;
+        if (i > 3 && fabs(diffs[i - 1]) > 1e-20) {
+            order_estimate = log(fabs(diffs[i - 1] / diffs[i])) / log(2.0);
+        }
+
+        // Number of function calculations
+        int f_calcs = pow(2, i - 1);
+
+        // Print the row
+        std::cout << std::setw(5) << i
+                  << std::setw(15) << std::fixed << std::setprecision(6) << A[i][1]
+                  << std::setw(20) << std::scientific << std::setprecision(6) << diffs[i]
+                  << std::setw(15) << std::fixed << std::setprecision(6) << alpha_k
+                  << std::setw(15) << std::scientific << std::setprecision(6) << rich_error
+                  << std::setw(15) << f_calcs
+                  << std::setw(15) << std::fixed << std::setprecision(6) << order_estimate
+                  << std::endl;
+    }
+
+    // Print the final result
+    std::cout << "Final result: " << std::fixed << std::setprecision(6) << A[maxLevel][maxLevel] << std::endl;
+}
 
 int main() {
-cout<<trapezoid(0, 1, 100, eq1)<<endl;
-cout<<simpson(0, 1, 100, eq2)<<endl;
-cout<<midpoint(0, 1, 100, eq3)<<endl;
-cout<<trapezoid(0, 1, 100, eq4)<<endl;
-
+    double a = 0.0;    // Lower bound of integration
+    double b = 1.0;    // Upper bound of integration
+    int order = 2;   //
+    int maxLevel = 16; // Maximum level for Richardson extrapolation
+    
+    std::cout << "cos(pow(x,2))*exp(-x)" << std::endl;
+    richardsonExtrapolation(a, b, maxLevel,order);
+    
+    return 0;
 }

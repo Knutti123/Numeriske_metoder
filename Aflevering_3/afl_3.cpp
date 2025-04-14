@@ -162,40 +162,13 @@
 using namespace std;
 
 
-// Newton-Cotes quadrature implementation
-double trapezoid(double a, double b, int n, double (*func)(double)) {
-    double h = (b - a) / n;
-    double sum = 0.5 * (func(a) + func(b));
-    
-    for (int i = 1; i < n; i++) {
-        sum += func(a + i * h);
-    }
-    
-    return h * sum;
-}
+double eq1(double x) {
+    return (cos(pow(x,3)*exp(-x)))/sqrt(x); 
+};
 
-double simpson(double a, double b, int n, double (*func)(double)) {
-    if (n % 2 != 0) n++; // Simpson's rule requires even number of intervals
-    
-    double h = (b - a) / n;
-    double sum = func(a) + func(b);
-    
-    for (int i = 1; i < n; i++) {
-        if (i % 2 == 0) {
-            sum += 2 * func(a + i * h);
-        } else {
-            sum += 4 * func(a + i * h);
-        }
-    }
-    
-    return h * sum / 3;
-}
-
-// Midpoint rule
 double midpoint(double a, double b, int n, double (*func)(double)) {
     double h = (b - a) / n;
     double sum = 0.0;
-    
     for (int i = 0; i < n; i++) {
         double x_mid = a + (i + 0.5) * h;
         sum += func(x_mid);
@@ -203,25 +176,17 @@ double midpoint(double a, double b, int n, double (*func)(double)) {
     
     return h * sum;
 }
-// Test function for integration
-double eq1(double x) {
-    return cos(pow(x,2))*exp(-x); 
-}
-double eq2(double x) {
-    return sqrt(x)*cos(pow(x,2))*exp(-x); 
-}
-double eq3(double x) {
-    return (1/sqrt(x))*cos(pow(x,2))*exp(-x); 
-}
-double eq4(double x) {
-    return 1000*exp(-1/x)*exp(-1/(1-x));
+
+int task_4()
+{
+    double a = 0.0;
+    double b = 4.0;
+    int n = 1000; // Number of intervals
+    
 }
 
-
-int main() {
-cout<<trapezoid(0, 1, 100, eq1)<<endl;
-cout<<simpson(0, 1, 100, eq2)<<endl;
-cout<<midpoint(0, 1, 100, eq3)<<endl;
-cout<<trapezoid(0, 1, 100, eq4)<<endl;
+int main(){
+cout<<midpoint(0, 4, 2, eq1)<<endl;
 
 }
+
