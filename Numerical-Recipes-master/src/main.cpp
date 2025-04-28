@@ -167,8 +167,8 @@ using namespace std;
 
 // The function to integrate: cos(x^2) * exp(-x)
 double eq1(double x) {
-    return cos(pow(x, 2)) * exp(-x);
-}
+    return ((cos(pow(x,3))*exp(-x))/sqrt(x));
+};
 
 // Midpoint integration method
 double midpoint(double a, double b, int n, double (*func)(double)) {
@@ -181,57 +181,51 @@ double midpoint(double a, double b, int n, double (*func)(double)) {
     return h * sum;
 }
 
-// Calculate Richardson extrapolation using Midpnt
-void richardsonExtrapolation(double a, double b, int maxLevel, int order) {
-    std::vector<std::vector<double>> A(maxLevel + 1, std::vector<double>(maxLevel + 1, 0.0));
-    std::vector<double> diffs(maxLevel + 1, 0.0);
 
-    // Define the function to integrate
-    auto func = [](double x) { return cos(pow(x, 2)) * exp(-x); };
+// Calculate Richardson extrapolation using our own midpoint function
+void richardsonExtrapolation_midpoint(double a, double b, int maxIte, int order, double tolerance=pow(10,-3)) {
+    vector<vector<double>> A(maxIte + 1, vector<double>(maxIte + 1, 0.0)); //Future proofing for more methods
+    vector<double> diffs(maxIte + 1, 0.0); //vector to store diffrences used in calcs
 
-    // Calculate initial approximations with increasing number of intervals using Midpnt
-    for (int i = 1; i <= maxLevel; i++) {
-        int n = pow(2, i - 1);
-        Midpnt<decltype(func)> midpnt(func, a, b);
-        for (int j = 0; j < n; j++) {
-            midpnt.next();
-        }
-        A[i][1] = midpnt.s;
+    // Calculate initial approximations with increasing number of intervals
+    for (int i = 1; i <= maxIte; i++) {
+        int n = pow(2, i)+1; //N given by the assigment
+        A[i][1] = midpoint(a, b, n, eq1);
     }
 
     // Print header
-    std::cout << "MidPoint result:  h1/h2 = 2" << std::endl;
-    std::cout << std::setw(5) << "i"
-              << std::setw(15) << "A(h_i)"
-              << std::setw(20) << "A(h_(i-1)) - A(h_i)"
-              << std::setw(15) << "alp^k"
-              << std::setw(15) << "Rich-error"
-              << std::setw(15) << "f-calculations"
-              << std::setw(15) << "order-estimate"
-              << std::endl;
+    cout << "MidPoint result:  h1/h2 = 2" << endl;
+    cout << setw(5) << "i"
+              << setw(15) << "A(h_i)"
+              << setw(20) << "A(h_(i-1)) - A(h_i)"
+              << setw(15) << "alp^k"
+              << setw(15) << "Rich-error"
+              << setw(15) << "f-calculations"
+              << setw(15) << "order-estimate"
+              << endl;
 
     // Calculate and print first row (no differences available yet)
-    std::cout << std::setw(5) << 1
-              << std::setw(15) << std::fixed << std::setprecision(6) << A[1][1]
-              << std::endl;
+    cout << setw(5) << 1
+              << setw(15) << fixed << setprecision(6) << A[1][1]
+              << endl;
 
     // Calculate difference for second row
     diffs[2] = A[1][1] - A[2][1];
 
     // Print second row (no ratio available yet)
-    std::cout << std::setw(5) << 2
-              << std::setw(15) << std::fixed << std::setprecision(6) << A[2][1]
-              << std::setw(20) << std::scientific << std::setprecision(8) << diffs[2]
-              << std::endl;
+    cout << setw(5) << 2
+              << setw(15) << fixed << setprecision(6) << A[2][1]
+              << setw(20) << scientific << setprecision(8) << diffs[2]
+              << endl;
 
     // Process remaining rows
-    for (int i = 3; i <= maxLevel; i++) {
+    for (int i = 3; i <= maxIte; i++) {
         // Calculate differences for current row
         diffs[i] = A[i - 1][1] - A[i][1];
 
-        // Calculate ratio of consecutive differences (alp^k)
+        // Calculate (alp^k)
         double alpha_k = 0.0;
-        if (fabs(diffs[i - 1]) > 1e-20) {  // Avoid division by very small numbers
+        if (fabs(diffs[i - 1]) > 1e-20) {
             alpha_k = diffs[i - 1] / diffs[i];
         }
 
@@ -251,28 +245,70 @@ void richardsonExtrapolation(double a, double b, int maxLevel, int order) {
         int f_calcs = pow(2, i - 1);
 
         // Print the row
-        std::cout << std::setw(5) << i
-                  << std::setw(15) << std::fixed << std::setprecision(6) << A[i][1]
-                  << std::setw(20) << std::scientific << std::setprecision(6) << diffs[i]
-                  << std::setw(15) << std::fixed << std::setprecision(6) << alpha_k
-                  << std::setw(15) << std::scientific << std::setprecision(6) << rich_error
-                  << std::setw(15) << f_calcs
-                  << std::setw(15) << std::fixed << std::setprecision(6) << order_estimate
-                  << std::endl;
+        cout << setw(5) << i
+                  << setw(15) << fixed << setprecision(6) << A[i][1]
+                  << setw(20) << scientific << setprecision(6) << diffs[i]
+                  << setw(15) << fixed << setprecision(6) << alpha_k
+                  << setw(15) << scientific << setprecision(6) << rich_error
+                  << setw(15) << f_calcs
+                  << setw(15) << fixed << setprecision(6) << order_estimate
+                  << endl;
+        
+    if(fabs(rich_error) < tolerance && i > 3) {
+        cout << "Converged to desired accuracy." << endl;
+        break;
     }
+    }
+}
 
-    // Print the final result
-    std::cout << "Final result: " << std::fixed << std::setprecision(6) << A[maxLevel][maxLevel] << std::endl;
+struct DErule_func {
+    int callCount = 0;
+
+    double operator()(double x, double dx) {
+        callCount++;
+        return ((cos(pow(x,3))*exp(-x))/sqrt(x));
+    }
+    
+    void resetCount() { callCount = 0; }
+    int getCount() const { return callCount; }
+
+};
+
+void DEcalc(int a, int b,int maxIte,double tolerance=pow(10,-3))
+{
+    DErule_func f;
+    DErule<DErule_func> de(f,a,b);
+    double prev = 0.0;
+    cout<<setw(5)<<"Approximation"<<setw(15)<<"f-calculation"<<endl;
+    for (int i = 0; i < maxIte; i++) {
+        f.resetCount();
+        double current = de.next();
+        cout << setw(5) << fixed << setprecision(6) << de.next() <<
+        setw(15)<<f.getCount()<<endl;
+        if(i>0)
+        {
+            if (fabs(current-prev)<tolerance)
+            {
+            cout<<"convereged towards a final result"<<endl;
+            break;
+            }
+        }
+        prev=current;
+    }    
 }
 
 int main() {
     double a = 0.0;    // Lower bound of integration
-    double b = 1.0;    // Upper bound of integration
-    int order = 2;   //
-    int maxLevel = 16; // Maximum level for Richardson extrapolation
-    
-    std::cout << "cos(pow(x,2))*exp(-x)" << std::endl;
-    richardsonExtrapolation(a, b, maxLevel,order);
-    
+    double b = 4.0;    // Upper bound of integration
+    int order = 2;   //Order for Equation type, 4 for simp, 2 for trapez and midpoint
+    int MaxIte = 16; // Maximum iterations for Richardson extrapolation
+    cout << "(cos(pow(x,3))*exp(-x))/sqrt(x)" << endl;
+    cout << "----------------------------------------" << endl;
+    cout << "Midpoint" << endl;
+    richardsonExtrapolation_midpoint(a, b, MaxIte,order);
+    cout << "----------------------------------------" << endl;
+    cout << "DErule" << endl;
+    DEcalc(a, b, MaxIte);
+    cout << "----------------------------------------" << endl;
     return 0;
 }
