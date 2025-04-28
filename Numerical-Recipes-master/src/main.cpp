@@ -164,151 +164,98 @@ using namespace std;
 #include <iomanip>
 #include <cmath>
 #include <vector>
-
-// The function to integrate: cos(x^2) * exp(-x)
-double eq1(double x) {
-    return ((cos(pow(x,3))*exp(-x))/sqrt(x));
-};
-
-// Midpoint integration method
-double midpoint(double a, double b, int n, double (*func)(double)) {
-    double h = (b - a) / n;
-    double sum = 0.0;
-    for (int i = 0; i < n; i++) {
-        double x_mid = a + (i + 0.5) * h;
-        sum += func(x_mid);
-    }
-    return h * sum;
-}
+double t = 0.0;
+double v1 = 1.0;
+double v2 = 2.0;
+double v3 = 3.0;
 
 
-// Calculate Richardson extrapolation using our own midpoint function
-void richardsonExtrapolation_midpoint(double a, double b, int maxIte, int order, double tolerance=pow(10,-3)) {
-    vector<vector<double>> A(maxIte + 1, vector<double>(maxIte + 1, 0.0)); //Future proofing for more methods
-    vector<double> diffs(maxIte + 1, 0.0); //vector to store diffrences used in calcs
 
-    // Calculate initial approximations with increasing number of intervals
-    for (int i = 1; i <= maxIte; i++) {
-        int n = pow(2, i)+1; //N given by the assigment
-        A[i][1] = midpoint(a, b, n, eq1);
-    }
-
-    // Print header
-    cout << "MidPoint result:  h1/h2 = 2" << endl;
-    cout << setw(5) << "i"
-              << setw(15) << "A(h_i)"
-              << setw(20) << "A(h_(i-1)) - A(h_i)"
-              << setw(15) << "alp^k"
-              << setw(15) << "Rich-error"
-              << setw(15) << "f-calculations"
-              << setw(15) << "order-estimate"
-              << endl;
-
-    // Calculate and print first row (no differences available yet)
-    cout << setw(5) << 1
-              << setw(15) << fixed << setprecision(6) << A[1][1]
-              << endl;
-
-    // Calculate difference for second row
-    diffs[2] = A[1][1] - A[2][1];
-
-    // Print second row (no ratio available yet)
-    cout << setw(5) << 2
-              << setw(15) << fixed << setprecision(6) << A[2][1]
-              << setw(20) << scientific << setprecision(8) << diffs[2]
-              << endl;
-
-    // Process remaining rows
-    for (int i = 3; i <= maxIte; i++) {
-        // Calculate differences for current row
-        diffs[i] = A[i - 1][1] - A[i][1];
-
-        // Calculate (alp^k)
-        double alpha_k = 0.0;
-        if (fabs(diffs[i - 1]) > 1e-20) {
-            alpha_k = diffs[i - 1] / diffs[i];
-        }
-
-        // Calculate Richardson error estimate
-        double rich_error = 0.0;
-        if (i > 2) {
-            rich_error = (A[i][1] - A[i - 1][1]) / (pow(2, order) - 1);
-        }
-
-        // Calculate order estimate
-        double order_estimate = 0.0;
-        if (i > 3 && fabs(diffs[i - 1]) > 1e-20) {
-            order_estimate = log(fabs(diffs[i - 1] / diffs[i])) / log(2.0);
-        }
-
-        // Number of function calculations
-        int f_calcs = pow(2, i - 1);
-
-        // Print the row
-        cout << setw(5) << i
-                  << setw(15) << fixed << setprecision(6) << A[i][1]
-                  << setw(20) << scientific << setprecision(6) << diffs[i]
-                  << setw(15) << fixed << setprecision(6) << alpha_k
-                  << setw(15) << scientific << setprecision(6) << rich_error
-                  << setw(15) << f_calcs
-                  << setw(15) << fixed << setprecision(6) << order_estimate
-                  << endl;
-        
-    if(fabs(rich_error) < tolerance && i > 3) {
-        cout << "Converged to desired accuracy." << endl;
-        break;
-    }
-    }
-}
-
-struct DErule_func {
-    int callCount = 0;
-
-    double operator()(double x, double dx) {
-        callCount++;
-        return ((cos(pow(x,3))*exp(-x))/sqrt(x));
-    }
-    
-    void resetCount() { callCount = 0; }
-    int getCount() const { return callCount; }
-
-};
-
-void DEcalc(int a, int b,int maxIte,double tolerance=pow(10,-3))
+void task_1()
 {
-    DErule_func f;
-    DErule<DErule_func> de(f,a,b);
-    double prev = 0.0;
-    cout<<setw(5)<<"Approximation"<<setw(15)<<"f-calculation"<<endl;
-    for (int i = 0; i < maxIte; i++) {
-        f.resetCount();
-        double current = de.next();
-        cout << setw(5) << fixed << setprecision(6) << de.next() <<
-        setw(15)<<f.getCount()<<endl;
-        if(i>0)
-        {
-            if (fabs(current-prev)<tolerance)
-            {
-            cout<<"convereged towards a final result"<<endl;
-            break;
-            }
-        }
-        prev=current;
-    }    
+    double v1_calc = exp(-t)*cos(v2)+pow(v3,2)-v1;
+    double v2_calc = cos(pow(v3, 2)) - v2;
+    double v3_calc = cos(t) * exp(-pow(v1, 2)) - v3;
+
+    cout<<cout.precision(6);
+    cout<<"v₁(0)"<<v1_calc<<endl;
+    cout<<"v₂(0)"<<v2_calc<<endl;
+    cout<<"v₃(0)"<<v3_calc<<endl;
 }
+
+// Define the differential equations
+struct rhs_func {
+    void operator() (const Doub x, VecDoub_I &y, VecDoub_O &dydx) {
+        dydx[0] = exp(-x)*cos(y[1])+pow(y[2],2)-y[0];  // dv₁/dt
+        dydx[1] = cos(pow(y[2], 2)) - y[1];            // dv₂/dt
+        dydx[2] = cos(x) * exp(-pow(y[0], 2)) - y[2];  // dv₃/dt
+    }
+};
+
+void task_2() 
+{
+    const double t_start = 0.0;
+    const double t_end = 5.0;
+    const double eps = 1.0e-6;      // Accuracy parameter
+        
+        // Initial conditions
+        VecDoub ystart(3);
+        ystart[0] = 1.0;  // v₁
+        ystart[1] = 2.0;  // v₂
+        ystart[2] = 3.0;  // v₃
+        
+        // Create the differential equation system
+        rhs_func derivs;
+        
+        // Run for different N values
+        vector<int> N_values = {50, 100, 200, 400, 800};
+        
+        for (int N : N_values) {
+            // Step size based on N
+            double h = (t_end - t_start) / N;
+            
+            // Reset initial conditions for each run
+            VecDoub y = ystart;
+            double t = t_start;
+            
+            // Temporary vectors for the trapezoidal method
+            VecDoub k1(3), k2(3), y_mid(3);
+            
+            // Apply trapezoidal method with N steps
+            for (int i = 0; i < N; i++) {
+                // First step: calculate derivatives at current point
+                derivs(t, y, k1);
+                
+                // Predict midpoint values using Euler
+                for (int j = 0; j < 3; j++) {
+                    y_mid[j] = y[j] + 0.5 * h * k1[j];
+                }
+                
+                // Calculate derivatives at predicted midpoint
+                derivs(t + 0.5 * h, y_mid, k2);
+                
+                // Update solution using trapezoidal rule
+                for (int j = 0; j < 3; j++) {
+                    y[j] += h * k2[j];
+                }
+                
+                t += h;
+            }
+            
+            // Print results for this N value
+            cout << "N = " << N << ":" << endl;
+            cout << "  v₁(5) = " << setprecision(8) << y[0] << endl;
+            cout << "  v₂(5) = " << setprecision(8) << y[1] << endl;
+            cout << "  v₃(5) = " << setprecision(8) << y[2] << endl;
+            cout << "  Step size h = " << h << endl << endl;
+        }
+}
+
+
+
 
 int main() {
-    double a = 0.0;    // Lower bound of integration
-    double b = 4.0;    // Upper bound of integration
-    int order = 2;   //Order for Equation type, 4 for simp, 2 for trapez and midpoint
-    int MaxIte = 16; // Maximum iterations for Richardson extrapolation
-    cout << "(cos(pow(x,3))*exp(-x))/sqrt(x)" << endl;
-    cout << "----------------------------------------" << endl;
-    cout << "Midpoint" << endl;
-    richardsonExtrapolation_midpoint(a, b, MaxIte,order);
-    cout << "----------------------------------------" << endl;
-    cout << "DErule" << endl;
-    DEcalc(a, b, MaxIte);
-    cout << "----------------------------------------" << endl;
+    task_1();
+    task_2();
     return 0;
 }
