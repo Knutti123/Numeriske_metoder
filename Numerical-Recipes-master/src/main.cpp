@@ -150,7 +150,7 @@
 #include <svd.h>
 #include <svm.h>
 #include <toeplz.h>
-//#include <tridag.h>
+#include <tridag.h>
 #include <vander.h>
 #include <vegas.h>
 #include <voltra.h>
@@ -159,134 +159,79 @@
 #include <wavelet.h>
 #include <weights.h>
 #include <zrhqr.h>
+#include <tridag.h>
 using namespace std;
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 #include <vector>
+#include <cassert>
 
-void tridag(const vector<double> &a, const vector<double> &b, const vector<double> &c, const vector<double> &r, vector<double> &x) {
-    int n = r.size();
-    vector<double> ac(n), bc(n), cc(n), rc(n);
-    
-    // Forward elimination
-    ac[0] = a[0] / b[0];
-    bc[0] = r[0] / b[0];
-    
-    for (int i = 1; i < n; i++) {
-        double denom = b[i] - c[i-1] * ac[i-1];
-        ac[i] = a[i] / denom;
-        bc[i] = (r[i] - c[i-1] * bc[i-1]) / denom;
-    }
-    
-    // Back substitution
-    x[n-1] = bc[n-1];
-    for (int i = n - 2; i >= 0; i--) {
-        x[i] = bc[i] - ac[i] * x[i+1];
+//j is collum and k is row
+size_t indx(size_t N, size_t j, size_t k) //index function
+{
+    assert(k<N);
+    assert(j<N);
+    return (N-1)*k+j;
+}  
+VecDoub rev_indx(size_t i, size_t N) //reverse index function
+{
+    size_t j = i % (N-1);
+    size_t k = (i - j) / (N-1);
+    VecDoub v(2);
+    v[0] = j;
+    v[1] = k;
+    return v;
+}
+double F(double x, double y) //RHS function
+{
+    return 1+x+y;
+}
+double u(double x, double y) //Exact solution
+{
+    return 0;
+}
+
+double pde(size_t N,double x_low, double x_high, double y_low, double y_high, double Lambda)
+{
+    MatDoub A(pow(N,2),pow(N,2));
+    VecDoub b(pow(N,2));
+    VecDoub u(pow(N,2));
+    VecDoub f(pow(N,2));
+    size_t n = N-1;
+    MatDoub A(pow(n,2),pow(n,2));
+    VecDoub phi(pow(n,2));
+    VecDoub omega(pow(n,2));
+    double h = (x_high-x_low)/(n); //step size
+
+    for (size_t i=0; i<pow(n,2); i++)
+    {
+        for (size_t j=0; j<pow(n,2); j++)
+        {
+            double x_j = x_low + (indx(N,j,i)*h);
+            double y_k = y_low + (indx(N,i,j)*h);
+            if (j==i)
+            {
+                A[i][j] = 4*pow(h,2)*Lambda;
+            }
+            else if (j==i+1 || j==i-1 || j==i+n || j==i-n)
+            {
+                A[i][j] = 1;
+            }
+            else
+            {
+                A[i][j] = 0;
+            }
+            A[i][j] = 
+
+        }   
     }
 }
 
-// Initialize grid points between boundaries
-vector<double> initializeGrid(double x0, double x2, int N) {
-    vector<double> x(N + 2);
-    double dx = (x2 - x0) / (N + 1);
-    for (int i = 0; i <= N + 1; i++) {
-        x[i] = x0 + i * dx;
-    }
-    return x;
-}
+int main()
+{
+    int N = 4;
+    int Lambda = 0;
 
-// Initialize solution with linear interpolation between boundary conditions
-vector<double> initializeSolution(const vector<double>& x, double y_start, double y_end) {
-    int N = x.size() - 2;
-    vector<double> y(N + 2);
-    y[0] = y_start;
-    y[N + 1] = y_end;
-    for (int i = 1; i <= N; i++) {
-        y[i] = y[0] + (y[N + 1] - y[0]) * (x[i] - x[0]) / (x[N + 1] - x[0]);
-    }
-    return y;
-}
-
-// Set up and solve the tridiagonal system for one Newton iteration
-double performNewtonIteration(vector<double>& y, const vector<double>& x, double dx) {
-    int N = x.size() - 2;
-    double dx2 = dx * dx;
-    vector<double> a(N), b(N), c(N), r(N);
-    
-    // Fill the Jacobian and residual vector
-    for (int i = 1; i <= N; i++) {
-        // Define derivatives for neighboring points
-        double yp_forward = (i < N) ? (y[i+1] - y[i]) / dx : (y[N+1] - y[N]) / dx;
-        double yp_backward = (y[i] - y[i-1]) / dx;
-        double yp_central = (yp_forward + yp_backward) / 2;
-        
-        // Define residual phi
-        double residual = (y[i+1] - 2.0*y[i] + y[i-1]) / dx2 - 2.0*x[i] - sin(yp_central) + cos(y[i]);
-        r[i-1] = -residual;
-        
-        // Jacobian components
-        if (i > 1) a[i-1] = 1.0/dx2 - 0.5 * cos(yp_central) / dx;
-        b[i-1] = -2.0/dx2 + sin(y[i]);
-        if (i < N) c[i-1] = 1.0/dx2 + 0.5 * cos(yp_central) / dx;
-    }
-    
-    // Solve the system J * Δy = -phi
-    vector<double> delta_y(N);
-    tridag(a, b, c, r, delta_y);
-    
-    // Update solution and return max residual
-    double maxRes = 0.0;
-    for (int i = 1; i <= N; i++) {
-        y[i] += delta_y[i-1];
-        maxRes = max(maxRes, fabs(delta_y[i-1]));
-    }
-    
-    return maxRes;
-}
-
-// Print the solution
-void printResults(const vector<double>& x, const vector<double>& y) {
-    cout << "\nResults:\n";
-    cout << "x\ty\n";
-    cout << "----------------\n";
-    for (size_t i = 0; i < x.size(); i++) {
-        cout << fixed << setprecision(4) << x[i] << "\t" << y[i] << endl;
-    }
-}
-
-int main() {
-    // Parameters
-    const int N = 100;  // Grid points (excluding boundaries)
-    const double x0 = 0.0;
-    const double x2 = 2.0;
-    const double y_start = 0.0;  // y(0) = 0
-    const double y_end = 1.0;    // y(2) = 1
-    
-    // Set up grid and initial solution
-    vector<double> x = initializeGrid(x0, x2, N);
-    vector<double> y = initializeSolution(x, y_start, y_end);
-    
-    double dx = (x2 - x0) / (N + 1);  // Step size
-    
-    // Newton iteration
-    const int maxIter = 100;
-    const double tol = 1e-8;
-    int iter = 0;
-    double maxRes = 1.0;
-    
-    while (maxRes > tol && iter < maxIter) {
-        maxRes = performNewtonIteration(y, x, dx);
-        
-        iter++;
-        cout << "Iteration " << iter << ": max residual = " << maxRes << endl;
-    }
-    
-    // Output results
-    printResults(x, y);
-
-    cout << "\nValue at y(1): " << y[N/2 + 1] << endl;
-    cout << "Converged in " << iter << " iterations." << endl;
-    
     return 0;
 }

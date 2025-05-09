@@ -150,7 +150,7 @@
 #include <svd.h>
 #include <svm.h>
 #include <toeplz.h>
-//#include <tridag.h>
+#include <tridag.h>
 #include <vander.h>
 #include <vegas.h>
 #include <voltra.h>
@@ -159,34 +159,13 @@
 #include <wavelet.h>
 #include <weights.h>
 #include <zrhqr.h>
+#include <tridag.h>
 using namespace std;
 #include <iostream>
 #include <iomanip>
 #include <cmath>
 #include <vector>
 
-void tridag(const vector<double> &a, const vector<double> &b, const vector<double> &c, const vector<double> &r, vector<double> &x) {
-    int n = r.size();
-    vector<double> ac(n), bc(n), cc(n), rc(n);
-    
-    // Forward elimination
-    ac[0] = a[0] / b[0];
-    bc[0] = r[0] / b[0];
-    
-    for (int i = 1; i < n; i++) {
-        double denom = b[i] - c[i-1] * ac[i-1];
-        ac[i] = a[i] / denom;
-        bc[i] = (r[i] - c[i-1] * bc[i-1]) / denom;
-    }
-    
-    // Back substitution
-    x[n-1] = bc[n-1];
-    for (int i = n - 2; i >= 0; i--) {
-        x[i] = bc[i] - ac[i] * x[i+1];
-    }
-}
-
-// Initialize grid points between boundaries
 vector<double> initializeGrid(double x0, double x2, int N) {
     vector<double> x(N + 2);
     double dx = (x2 - x0) / (N + 1);
@@ -212,7 +191,7 @@ vector<double> initializeSolution(const vector<double>& x, double y_start, doubl
 double performNewtonIteration(vector<double>& y, const vector<double>& x, double dx) {
     int N = x.size() - 2;
     double dx2 = dx * dx;
-    vector<double> a(N), b(N), c(N), r(N);
+    VecDoub a(N), b(N), c(N), r(N);
     
     // Fill the Jacobian and residual vector
     for (int i = 1; i <= N; i++) {
@@ -232,7 +211,7 @@ double performNewtonIteration(vector<double>& y, const vector<double>& x, double
     }
     
     // Solve the system J * Δy = -phi
-    vector<double> delta_y(N);
+    VecDoub delta_y(N);
     tridag(a, b, c, r, delta_y);
     
     // Update solution and return max residual

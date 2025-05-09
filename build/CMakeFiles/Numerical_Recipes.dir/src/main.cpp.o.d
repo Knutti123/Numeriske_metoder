@@ -344,10 +344,12 @@ CMakeFiles/Numerical_Recipes.dir/src/main.cpp.o: \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/stringalign.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/svm.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/toeplz.h \
+ /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/tridag.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/vander.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/vegas.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/voltra.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/voronoi.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/wavelet.h \
  /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/weights.h \
- /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/zrhqr.h
+ /home/kristian/Uni/6_semester/Numeriske_metoder/Numerical-Recipes-master/src/include/zrhqr.h \
+ /usr/include/c++/11/cassert /usr/include/assert.h
