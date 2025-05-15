@@ -167,71 +167,68 @@ using namespace std;
 #include <vector>
 #include <cassert>
 
-//j is collum and k is row
-size_t indx(size_t N, size_t j, size_t k) //index function
+double u(double x, double t)
 {
-    assert(k<N);
-    assert(j<N);
-    return (N-1)*k+j;
-}  
-VecDoub rev_indx(size_t i, size_t N) //reverse index function
-{
-    size_t j = i % (N-1);
-    size_t k = (i - j) / (N-1);
-    VecDoub v(2);
-    v[0] = j;
-    v[1] = k;
-    return v;
-}
-double F(double x, double y) //RHS function
-{
-    return 1+x+y;
-}
-double u(double x, double y) //Exact solution
-{
-    return 0;
+    assert(x>=0.0 && x<=1.0);
+    assert(t>=0.0);
+    if (t == 0 && x>=0 && x<=1)
+        return pow(x,4);
+    else if (x==0 && t>0)
+        return 0;
+    else if (x==1 && t>0)
+        return 1;    
 }
 
-double pde(size_t N,double x_low, double x_high, double y_low, double y_high, double Lambda)
+double f(double x, double t)
 {
-    MatDoub A(pow(N,2),pow(N,2));
-    VecDoub b(pow(N,2));
-    VecDoub u(pow(N,2));
-    VecDoub f(pow(N,2));
-    size_t n = N-1;
-    MatDoub A(pow(n,2),pow(n,2));
-    VecDoub phi(pow(n,2));
-    VecDoub omega(pow(n,2));
-    double h = (x_high-x_low)/(n); //step size
+    return x*(1-x)*cos(t)*exp((-t)/10);
+}
 
-    for (size_t i=0; i<pow(n,2); i++)
+
+double parabolic_pde(int N, int alpha, double f(double x, double y),double u(double x, double y),const double t_end, const double x_target)
+{
+
+    auto g = [&](double x) {return u(x,0);};
+    double n = N-1;
+    double h = 1.0/N;
+    double r = alpha*(h/pow(h,2));
+    VecDoub A(n);
+    VecDoub B(n);
+    VecDoub C(n);
+    VecDoub R(n);
+    VecDoub U(N+1);
+    VecDoub Res(n);
+    for (int j=0; j<N+1; j++)
     {
-        for (size_t j=0; j<pow(n,2); j++)
-        {
-            double x_j = x_low + (indx(N,j,i)*h);
-            double y_k = y_low + (indx(N,i,j)*h);
-            if (j==i)
-            {
-                A[i][j] = 4*pow(h,2)*Lambda;
-            }
-            else if (j==i+1 || j==i-1 || j==i+n || j==i-n)
-            {
-                A[i][j] = 1;
-            }
-            else
-            {
-                A[i][j] = 0;
-            }
-            A[i][j] = 
-
-        }   
+        double x = j*h;
+        U[j]=u(x,0);
     }
+    for (int t=0;t<t_end;t++)
+    {
+        for (int j=1; j<N; j++)
+        {
+            double x = j*h;
+            A[j-1] = -0.5*r;
+            B[j-1] = 1+r;
+            C[j-1] = 0.5*r;
+            R[j-1] = 0.5*r*U[j-1]+(1+r)*U[j]+0.5*r*U[j+1]+(h/2)*(f(x,t)+f(x,t+1));
+        }
+        tridag(A,B,C,R,Res);
+        for (int j=0; j<N; j++)
+        {
+            U[j+1] = Res[j];
+        }
+    }
+    util::print(U);
 }
 
-int main()
-{
-    int N = 4;
-    int Lambda = 0;
-
+int main() {
+    int aplha = 1;
+    int a=0;
+    int b=1;
+    int N = 10;
+    double t_end = 20;
+    double x_target = 0.5;
+    double result = parabolic_pde(N, aplha, f, u, t_end, x_target);
     return 0;
 }
